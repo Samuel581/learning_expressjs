@@ -1,9 +1,15 @@
-import express, { request } from 'express';
+import express, { request, response } from 'express';
 import dotenv, { parse } from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
 const app = express();
+
+//Middleware
+app.use(express.json())
+
+
+
 const PORT = process.env.PORT;
 const mockProducts = [
     { id: 1, name: 'Milk 2 Liters', price: 2.50 },
@@ -29,6 +35,7 @@ app.get('/api/products', (request, response) => {
     response.send(mockProducts)
 });
 
+//Using params
 app.get('/api/products/:id', (request, response) => {
     const parseId = parseInt(request.params.id);
     if (isNaN(parseId)) return response.status(400).send({ msg: 'Bad Request. Invalid ID' });
@@ -40,6 +47,7 @@ app.get('/api/products/:id', (request, response) => {
     return response.send(findProduct);
 })
 
+//God knows LMAO
 app.get('/api/users', (request, response) => {
     console.log(request.query);
     const { filter, value } = request.query;
@@ -54,6 +62,10 @@ app.get('/api/users', (request, response) => {
     response.send(mockUsers);
 });
 
+app.post('/api/users', (request, response) => {
+    console.log(request.body);
+    return response.sendStatus(200);
+})
 
 
 app.listen(PORT, () => {
