@@ -1,0 +1,19 @@
+{
+  "name": "expressjs-tutorial",
+  "version": "1.0.0",
+  "main": "index.mjs",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.mjs",
+    "dev": "nodemon ./src/index.mjs"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.3",
+    "express": "^4.18.2"
+  }
+}
