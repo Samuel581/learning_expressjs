@@ -1,0 +1,43 @@
+# Dependencias
+node_modules/
+
+# Archivos de entorno
+.env
+.env.*
+
+# Directorios de caché
+.cache/
+.pnp.*
+.yarn/
+
+# Directorios de salida
+dist/
+build/
+out/
+
+# Archivos de registro
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema de archivos
+.DS_Store
+Thumbs.db
+
+# Directorios específicos de editores de código y herramientas de desarrollo
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Archivos de compilación
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.seed
+*.pid.lock
+
+# Otros archivos y directorios
+tmp/
+temp/
