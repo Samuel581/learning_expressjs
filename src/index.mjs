@@ -63,8 +63,10 @@ app.get('/api/users', (request, response) => {
 });
 
 app.post('/api/users', (request, response) => {
-    console.log(request.body);
-    return response.sendStatus(200);
+    const {body} = request;
+    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body};
+    mockUsers.push(newUser);
+    return response.send(newUser).status(200);
 })
 
 
