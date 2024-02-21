@@ -23,7 +23,11 @@ const mockProducts = [
 const mockUsers = [
     { id: 1, name: 'John Doe', displayName: 'Jonh' },
     { id: 2, name: 'Jane Doe', displayName: 'Jane' },
-    { id: 2, name: 'Lucas Melor', displayName: 'Lucas' },
+    { id: 3, name: 'Lucas Melor', displayName: 'Lucas' },
+    { id: 4, name: 'Jason Todd', displayName: 'Jason' },
+    { id: 5, name: 'Jose Lopez', displayName: 'Jose' },
+    { id: 6, name: 'Cristian Dior', displayName: 'Cristian' },
+    { id: 7, name: 'Margarette Ramirez', displayName: 'Margarette' },
 ];
 
 app.get('/', (request, response) => {
@@ -102,11 +106,25 @@ app.patch('/api/users/:id', (request, response) => {
     const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
     if (findUserIndex === -1) return response.sendStatus(404);
     // Here we get the entire object and it's values and then we override it using the body we sent
-    mockUsers[findUserIndex] = {...mockUsers[findUserIndex], ...body}
+    mockUsers[findUserIndex] = { ...mockUsers[findUserIndex], ...body }
     // The return line
     return response.sendStatus(200);
 })
 
 //DELETE -> This one explains itself
+//Tipically you don't need to add a body to the request 
+//You can, but it's not common
 
+app.delete('/api/users/:id', (request, response) => {
+    const {
+        params: { id }
+    } = request;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return response.sendStatus(400);
+    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+    if (findUserIndex === -1) return response.sendStatus(404);
+    // Splice with a counter number for deleting just one user/object
+    mockUsers.splice(findUserIndex, 1);
+    return response.sendStatus(200);
+})
 
