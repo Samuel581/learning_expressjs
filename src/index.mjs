@@ -54,7 +54,7 @@ app.get('/api/users', (request, response) => {
 
     if (filter && value) {
         return response.send(
-            mockUsers.filter((user) => 
+            mockUsers.filter((user) =>
                 user[filter] && user[filter].toString().toLowerCase().includes(value.toLowerCase()))
         );
     }
@@ -63,8 +63,8 @@ app.get('/api/users', (request, response) => {
 });
 
 app.post('/api/users', (request, response) => {
-    const {body} = request;
-    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body};
+    const { body } = request;
+    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
     mockUsers.push(newUser);
     return response.send(newUser).status(200);
 })
@@ -76,26 +76,35 @@ app.listen(PORT, () => {
 
 //PUT -> Update all of something (for example here, an user)
 
-app.put('/api/users/:id', (request, response)=>{
-    const {body, params: {id}} = request;
-
+app.put('/api/users/:id', (request, response) => {
+    const {
+        body,
+        params: { id }
+    } = request;
     const parsedId = parseInt(id);
-
-    if(isNaN(parsedId)) return response.sendStatus(400);
-
+    if (isNaN(parsedId)) return response.sendStatus(400);
     const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-
     if (findUserIndex === -1) return response.sendStatus(404);
-
-    mockUsers[findUserIndex] = { id: parsedId, ...body};
+    mockUsers[findUserIndex] = { id: parsedId, ...body };
     return response.sendStatus(200);
 
 })
 
 //PATCH -> Update just a portion of something (for example here, an username of an user and just that)
 
-app.patch('api/users/:id', (request, response) => {
-    
+app.patch('/api/users/:id', (request, response) => {
+    const {
+        body,
+        params: { id }
+    } = request;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return response.sendStatus(400);
+    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+    if (findUserIndex === -1) return response.sendStatus(404);
+    // Here we get the entire object and it's values and then we override it using the body we sent
+    mockUsers[findUserIndex] = {...mockUsers[findUserIndex], ...body}
+    // The return line
+    return response.sendStatus(200);
 })
 
 //DELETE -> This one explains itself
