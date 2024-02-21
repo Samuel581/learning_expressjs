@@ -73,3 +73,31 @@ app.post('/api/users', (request, response) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
+
+//PUT -> Update all of something (for example here, an user)
+
+app.put('/api/users/:id', (request, response)=>{
+    const {body, params: {id}} = request;
+
+    const parsedId = parseInt(id);
+
+    if(isNaN(parsedId)) return response.sendStatus(400);
+
+    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+
+    if (findUserIndex === -1) return response.sendStatus(404);
+
+    mockUsers[findUserIndex] = { id: parsedId, ...body};
+    return response.sendStatus(200);
+
+})
+
+//PATCH -> Update just a portion of something (for example here, an username of an user and just that)
+
+app.patch('api/users/:id', (request, response) => {
+    
+})
+
+//DELETE -> This one explains itself
+
+
