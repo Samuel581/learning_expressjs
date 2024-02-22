@@ -8,6 +8,25 @@ const app = express();
 //Middleware
 app.use(express.json())
 
+//New middleware, the next argument is something you call when you are done with the middleware
+// Middleware NEED to be registered before a route
+const loggingMiddleware = (request, response, next) => {
+    console.log(`${request.method} - ${request.url}`);
+    next();
+}
+
+const resolveUserByIndexId = (request, response, next) => {
+    const {
+        body,
+        params: { id }
+    } = request;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return response.sendStatus(400);
+    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+    if (findUserIndex === -1) return response.sendStatus(404);
+    request.findUserIndex = findUserIndex;
+    next();
+}
 
 
 const PORT = process.env.PORT;
@@ -30,7 +49,10 @@ const mockUsers = [
     { id: 7, name: 'Margarette Ramirez', displayName: 'Margarette' },
 ];
 
-app.get('/', (request, response) => {
+app.get('/', (request, response, next) => {
+    console.log('Base URL');
+    next();
+}, (request, response) => {
     response.status(201).send({ msg: 'Hello World' });
 })
 
@@ -80,31 +102,17 @@ app.listen(PORT, () => {
 
 //PUT -> Update all of something (for example here, an user)
 
-app.put('/api/users/:id', (request, response) => {
-    const {
-        body,
-        params: { id }
-    } = request;
-    const parsedId = parseInt(id);
-    if (isNaN(parsedId)) return response.sendStatus(400);
-    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-    if (findUserIndex === -1) return response.sendStatus(404);
-    mockUsers[findUserIndex] = { id: parsedId, ...body };
+app.put('/api/users/:id', resolveUserByIndexId, (request, response) => {
+    const { body, findUserIndex } = request;
+    mockUsers[findUserIndex] = { id: mockUsers[findUserIndex].id, ...body };
     return response.sendStatus(200);
 
 })
 
 //PATCH -> Update just a portion of something (for example here, an username of an user and just that)
 
-app.patch('/api/users/:id', (request, response) => {
-    const {
-        body,
-        params: { id }
-    } = request;
-    const parsedId = parseInt(id);
-    if (isNaN(parsedId)) return response.sendStatus(400);
-    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-    if (findUserIndex === -1) return response.sendStatus(404);
+app.patch('/api/users/:id', resolveUserByIndexId, (request, response) => {
+    const { body, findUserIndex } = request;
     // Here we get the entire object and it's values and then we override it using the body we sent
     mockUsers[findUserIndex] = { ...mockUsers[findUserIndex], ...body }
     // The return line
@@ -115,16 +123,9 @@ app.patch('/api/users/:id', (request, response) => {
 //Tipically you don't need to add a body to the request 
 //You can, but it's not common
 
-app.delete('/api/users/:id', (request, response) => {
-    const {
-        params: { id }
-    } = request;
-    const parsedId = parseInt(id);
-    if (isNaN(parsedId)) return response.sendStatus(400);
-    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-    if (findUserIndex === -1) return response.sendStatus(404);
+app.delete('/api/users/:id', resolveUserByIndexId, (request, response) => {
     // Splice with a counter number for deleting just one user/object
-    mockUsers.splice(findUserIndex, 1);
+    mockUsers.splice(request.findUserIndex, 1);
     return response.sendStatus(200);
 })
 
