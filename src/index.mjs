@@ -1,5 +1,9 @@
-import express, { request, response } from 'express';
-import dotenv, { parse } from 'dotenv';
+import express from 'express';
+import dotenv from 'dotenv';
+import { query, validationResult, body, matchedData, checkSchema } from 'express-validator'
+import { createUserValidationSchema } from './utils/validationSchemas.mjs';
+import  usersRouter  from './routes/users.mjs';
+import { mockUsers } from './utils/constants.mjs';
 
 dotenv.config({ path: '.env' });
 
@@ -7,6 +11,7 @@ const app = express();
 
 //Middleware
 app.use(express.json())
+app.use(usersRouter)
 
 //New middleware, the next argument is something you call when you are done with the middleware
 // Middleware NEED to be registered before a route
@@ -39,17 +44,9 @@ const mockProducts = [
     { id: 6, name: 'Butter', price: 1.50 },
     { id: 7, name: 'Cheese', price: 2.00 },
 ];
-const mockUsers = [
-    { id: 1, name: 'John Doe', displayName: 'Jonh' },
-    { id: 2, name: 'Jane Doe', displayName: 'Jane' },
-    { id: 3, name: 'Lucas Melor', displayName: 'Lucas' },
-    { id: 4, name: 'Jason Todd', displayName: 'Jason' },
-    { id: 5, name: 'Jose Lopez', displayName: 'Jose' },
-    { id: 6, name: 'Cristian Dior', displayName: 'Cristian' },
-    { id: 7, name: 'Margarette Ramirez', displayName: 'Margarette' },
-];
 
-app.get('/', (request, response, next) => {
+
+app.get('/', loggingMiddleware, (request, response, next) => {
     console.log('Base URL');
     next();
 }, (request, response) => {
@@ -73,27 +70,25 @@ app.get('/api/products/:id', (request, response) => {
     return response.send(findProduct);
 })
 
-//God knows LMAO
-app.get('/api/users', (request, response) => {
-    console.log(request.query);
-    const { filter, value } = request.query;
 
-    if (filter && value) {
-        return response.send(
-            mockUsers.filter((user) =>
-                user[filter] && user[filter].toString().toLowerCase().includes(value.toLowerCase()))
-        );
-    }
+app.post('/api/users',
+    checkSchema(createUserValidationSchema),
+    (request, response) => {
+        const result = validationResult(request)
 
-    response.send(mockUsers);
-});
+        if (!result.isEmpty())
+            return response.status(400).send({ errors: result.array() });
 
-app.post('/api/users', (request, response) => {
-    const { body } = request;
-    const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
-    mockUsers.push(newUser);
-    return response.send(newUser).status(200);
-})
+        const data = matchedData(request);
+        console.log(data);
+
+
+        const { body } = request;
+        const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
+        mockUsers.push(newUser);
+
+        return response.send(newUser).status(200);
+    })
 
 
 app.listen(PORT, () => {
