@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { query, validationResult, checkSchema } from "express-validator";
 import { mockProducts } from "../utils/constants.mjs";
 const router = Router();
 
