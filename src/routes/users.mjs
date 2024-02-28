@@ -14,6 +14,14 @@ router.get('/users',
         .isLength({ min: 3, max: 10 })
         .withMessage('Must be 3 to 10 characters'),
     (request, response) => {
+        console.log(request.session.id);
+        request.sessionStore.get(request.session.id, (err, sessionData) => {
+            if(err){
+                console.error(err);
+                throw err;
+            }
+            console.log(sessionData);
+        }) 
 
 
         // We get the errors to handle them
@@ -31,6 +39,8 @@ router.get('/users',
 router.post('/users',
     checkSchema(createUserValidationSchema),
     (request, response) => {
+        
+
         const result = validationResult(request)
 
         if (!result.isEmpty())

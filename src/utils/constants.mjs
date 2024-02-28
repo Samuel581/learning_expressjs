@@ -1,12 +1,13 @@
 export const mockUsers = [
-    { id: 1, name: 'John Doe', displayName: 'Jonh' },
-    { id: 2, name: 'Jane Doe', displayName: 'Jane' },
-    { id: 3, name: 'Lucas Melor', displayName: 'Lucas' },
-    { id: 4, name: 'Jason Todd', displayName: 'Jason' },
-    { id: 5, name: 'Jose Lopez', displayName: 'Jose' },
-    { id: 6, name: 'Cristian Dior', displayName: 'Cristian' },
-    { id: 7, name: 'Margarette Ramirez', displayName: 'Margarette' },
+    { id: 1, username: 'StarGazer', displayName: 'John', password: 'password123' },
+    { id: 2, username: 'TrailBlazer', displayName: 'Jane', password: 'password123' },
+    { id: 3, username: 'CodeMaster', displayName: 'Lucas', password: 'password123' },
+    { id: 4, username: 'NightHawk', displayName: 'Jason', password: 'password123' },
+    { id: 5, username: 'SunSeeker', displayName: 'Jose', password: 'password123' },
+    { id: 6, username: 'DreamWeaver', displayName: 'Cristian', password: 'password123' },
+    { id: 7, username: 'SkyWalker', displayName: 'Margarette', password: 'password123' },
 ];
+
 
 export const mockProducts = [
     { id: 1, name: 'Milk 2 Liters', price: 2.50 },
