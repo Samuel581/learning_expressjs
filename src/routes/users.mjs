@@ -3,43 +3,32 @@ import { query, validationResult, checkSchema } from "express-validator";
 import { mockUsers } from "../utils/constants.mjs";
 import { createUserValidationSchema } from "../utils/validationSchemas.mjs";
 import { resolveUserByIndexId } from "../utils/middlewares.mjs";
+import { User } from "../mongoose/schemas/user.mjs";
 
 const router = Router();
 
 router.get('/users',
-    query('filter')
-        .isString()
-        .notEmpty()
-        .withMessage('Must not be empty') //This is how we poitn the errors, AKA give them a description to easy find
-        .isLength({ min: 3, max: 10 })
-        .withMessage('Must be 3 to 10 characters'),
-    (request, response) => {
-        console.log(request.session.id);
-        request.sessionStore.get(request.session.id, (err, sessionData) => {
-            if(err){
-                console.error(err);
-                throw err;
-            }
-            console.log(sessionData);
-        }) 
-
-
-        // We get the errors to handle them
+    checkSchema(createUserValidationSchema),
+    async (request, response) => {
         const result = validationResult(request);
-        console.log(result);
-        const { filter, value } = request.query;
-        if (filter && value) {
-            return response.send(
-                mockUsers.filter((user) => user[filter].includes(value))
-            );
+        if(result.isEmpty()) return response.send(result.array());
+        const { body } = request;
+        const newUser = new User(body);
+        try {
+            const savedUser = await newUser.save();
+            return response.status(201).send(savedUser);
+        } catch (err) {
+            console.log(err);
+            return response.sendStatus(400);
         }
-        response.send(mockUsers);
-    })
+    }
+
+)
 
 router.post('/users',
     checkSchema(createUserValidationSchema),
     (request, response) => {
-        
+
 
         const result = validationResult(request)
 

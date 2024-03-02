@@ -4,10 +4,16 @@ import routes from './routes/index.mjs'
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
+import mongoose from 'mongoose'
+import './strategies/local-strategy.mjs'
 
 
 dotenv.config({ path: '.env' });
 const app = express();
+mongoose
+    .connect('mongodb://localhost/express_turorial')
+    .then(() => console.log('Connected to Database'))
+    .catch((err) => console.log(`Error: ${err}`));
 //Middlewares
 //Middleware for parser JSON
 app.use(express.json());

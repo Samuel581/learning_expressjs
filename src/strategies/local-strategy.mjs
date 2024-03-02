@@ -11,7 +11,7 @@ passport.deserializeUser((id, done) => {
     try {
         const findUser = mockUsers.find((user) => user.id  === id);
         if(!findUser) throw new Error("User Not Found");
-        done(null, findUser)
+        done(null, findUser); 
     } catch (error) {
         done(error, null);
     }
