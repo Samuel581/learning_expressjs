@@ -2,14 +2,15 @@ import passport from 'passport'
 // If I install passport-facebook it will have it's own strategy
 import { Strategy } from 'passport-local'
 import { mockUsers } from '../utils/constants.mjs'
+import { User } from '../mongoose/schemas/user.mjs'
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
 })
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
     try {
-        const findUser = mockUsers.find((user) => user.id  === id);
+        const findUser = await User.findById(id);
         if(!findUser) throw new Error("User Not Found");
         done(null, findUser); 
     } catch (error) {
@@ -19,12 +20,12 @@ passport.deserializeUser((id, done) => {
 
 
 export default passport.use(
-    new Strategy((username, password, done) => {
+    new Strategy( async(username, password, done) => {
         console.log(username, password);
         try {
-            const findUser = mockUsers.find((user) => user.username === username);
-            if (!findUser) throw new Error("User not found");
-            if (findUser.password !== password) throw new Error("Password doesn't match");
+            const findUser = await User.findOne({username});
+            if(!findUser) throw new Error("User not found");
+            if(findUser.password !== password) throw new Error("Bad credentials");
             done(null, findUser);
         }
         catch (err) {

@@ -28,8 +28,6 @@ router.get('/users',
 router.post('/users',
     checkSchema(createUserValidationSchema),
     (request, response) => {
-
-
         const result = validationResult(request)
 
         if (!result.isEmpty())

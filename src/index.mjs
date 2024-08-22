@@ -9,9 +9,12 @@ import './strategies/local-strategy.mjs'
 
 
 dotenv.config({ path: '.env' });
+const PORT = 3000;
+
+
 const app = express();
 mongoose
-    .connect('mongodb://localhost/express_turorial')
+    .connect('mongodb://localhost/my_db')
     .then(() => console.log('Connected to Database'))
     .catch((err) => console.log(`Error: ${err}`));
 //Middlewares
@@ -39,11 +42,7 @@ app.use(cookieParser())
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 app.use('/api', routes);
-
-
-const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
