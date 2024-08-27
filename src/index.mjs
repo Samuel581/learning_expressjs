@@ -4,7 +4,8 @@ import routes from './routes/index.mjs'
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
+import MongoStore from 'connect-mongo'
 import './strategies/local-strategy.mjs'
 
 
@@ -33,7 +34,14 @@ app.use(
             cookie: {
                 //A cookie that will last 15 mins
                 maxAge: 60000 * 15
-            }
+            },
+            store: MongoStore.create({
+                client: mongoose.connection.getClient(),
+            }, (error) => {
+                if (error) {
+                    console.error('Session store error:', error);
+                }
+            })
         }
     ));
 //Middlaware for parser cookies
