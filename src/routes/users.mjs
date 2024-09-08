@@ -26,6 +26,8 @@ router.post('/users',
         if (!result.isEmpty()) return response.status(400).send(result.array());
         const {body} = request;
         console.log(body);
+        // This fubnction used to hash the user's password is already asyncronous and returns a promise
+        // Reffer to bycript documentation for more details https://www.npmjs.com/package/bcrypt
         body.password = hashPassword(body.password);
         const newUser = new User(body);
         try {

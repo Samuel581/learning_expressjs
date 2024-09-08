@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { request, Router } from "express";
 import { mockProducts } from "../utils/constants.mjs";
 import Product from "../mongoose/schemas/products.mjs";
 const router = Router();
@@ -31,6 +31,11 @@ router.get('/products/:id', (request, response) => {
     const findProduct = mockProducts.find((product) => product.id === parseId)
     if (!findProduct) return response;
     return response.send(findProduct);
+})
+
+router.patch('/products/:id', (request, response) => {
+
+    return response.send(modifiedProduct);
 })
 
 export default router;
